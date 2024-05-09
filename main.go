@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
@@ -11,8 +13,20 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 // Add a snippetView handler function.
 func snippetView(w http.ResponseWriter, r *http.Request) {
-	var id string = r.PathValue("id")
-	w.Write([]byte("Display snippet with ID: " + id))
+	// Extract the value of the id wildcard from the request using r.PathValue()
+	// and try to convert it to an integer using the strconv.Atoi() function. If
+	// it can't be converted to an integer, or the value is less than 1, we
+	// return a 404 page not found response.
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+
+	// Use the fmt.Sprintf() function to interpolate the id value with a
+	// message, then write it as the HTTP response.
+	msg := fmt.Sprintf("Display a specific snippet with ID %d...", id)
+	w.Write([]byte(msg))
 }
 
 // Add a snippetCreate handler function.

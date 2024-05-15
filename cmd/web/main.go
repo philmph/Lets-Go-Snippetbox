@@ -7,9 +7,6 @@ import (
 	"os"
 )
 
-// Define an application struct to hold the application-wide dependencies for the
-// web application. For now we'll only include the structured logger, but we'll
-// add more to this as the build progresses.
 type application struct {
 	logger *slog.Logger
 }

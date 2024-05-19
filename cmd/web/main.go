@@ -15,16 +15,8 @@ func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	flag.Parse()
 
-	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-
-	// Same code but explicitly typed
-	// var a application = application{
-	// 	logger: logger,
-	// }
-	// var app *application = &a
-
 	app := &application{
-		logger: logger,
+		logger: slog.New(slog.NewTextHandler(os.Stdout, nil)),
 	}
 
 	mux := http.NewServeMux()
@@ -37,9 +29,9 @@ func main() {
 	mux.HandleFunc("GET /snippet/create", app.snippetCreate)
 	mux.HandleFunc("POST /snippet/create", app.snippetCreatePost)
 
-	logger.Info("Starting server", "addr", *addr)
+	app.logger.Info("Starting server", "addr", *addr)
 
 	err := http.ListenAndServe(*addr, mux)
-	logger.Error(err.Error())
+	app.logger.Error(err.Error())
 	os.Exit(1)
 }

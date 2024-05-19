@@ -15,19 +15,27 @@ func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	flag.Parse()
 
-	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		AddSource: true,
-	}))
+	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+
+	// Same code but explicitly typed
+	// var a application = application{
+	// 	logger: logger,
+	// }
+	// var app *application = &a
+
+	app := &application{
+		logger: logger,
+	}
 
 	mux := http.NewServeMux()
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
 
-	mux.HandleFunc("GET /{$}", home)
-	mux.HandleFunc("GET /snippet/view/{id}", snippetView)
-	mux.HandleFunc("GET /snippet/create", snippetCreate)
-	mux.HandleFunc("POST /snippet/create", snippetCreatePost)
+	mux.HandleFunc("GET /{$}", app.home)
+	mux.HandleFunc("GET /snippet/view/{id}", app.snippetView)
+	mux.HandleFunc("GET /snippet/create", app.snippetCreate)
+	mux.HandleFunc("POST /snippet/create", app.snippetCreatePost)
 
 	logger.Info("Starting server", "addr", *addr)
 

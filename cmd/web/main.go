@@ -33,8 +33,8 @@ func main() {
 	defer db.Close()
 
 	app := &application{
-		logger:  logger,
-		snippet: &models.SnippetModel{DB: db},
+		logger:   logger,
+		snippets: &models.SnippetModel{DB: db},
 	}
 
 	logger.Info("starting server", slog.String("add", *addr))
